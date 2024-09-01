@@ -73,6 +73,7 @@ exports.createBooking = async (req, res) => {
 
 // Pour afficher tous les bookings du user dans la page "Mes propositions"
 exports.displayAllBookings = async (req, res) => {
+  console.log('rentré dans API displayAllBookings')
   if (req.body.isVenue) {
     // si le user connecté est un établissement
     Venue.findOne({ token: req.body.token }).then((dataVenue) => {
@@ -80,6 +81,7 @@ exports.displayAllBookings = async (req, res) => {
         Booking.find({ venue: dataVenue._id }) // on recherche tous les bookings qui ont l'ID de l'établissement en clé étrangère
           .then((bookings) => {
             if (bookings) {
+              console.log("bookings venue", bookings)
               res.json({ result: true, bookings });
             } else {
               res.json({ result: false, error: "No bookings found" });
@@ -96,6 +98,8 @@ exports.displayAllBookings = async (req, res) => {
         Booking.find({ artist: artist._id }) // on recherche tous les bookings qui ont l'ID de l'artiste en clé étrangère
           .then((bookings) => {
             if (bookings) {
+              console.log("bookings artist", bookings)
+
               res.json({ result: true, bookings });
             } else {
               res.json({ result: false, error: "No bookings found" });

@@ -28,7 +28,8 @@ exports.signUpArtist = async (req, res) => {
           isProfileCompleted: false,
         });
         newArtist.save().then((newArtistSaved) => {
-          res.json({ result: true, artist: newArtistSaved.token });
+          console.log("newArtistSaved en back", newArtistSaved)
+          res.json({ result: true, token: newArtistSaved.token, isProfileCompleted: newArtistSaved.isProfileCompleted });
         });
       } else {
         // le compte existe déjà en BDD
@@ -50,6 +51,8 @@ exports.signInArtist = async (req, res) => {
   //Recherche de l'artiste en BDD
   Artist.findOne({ email: req.body.email }).then((artist) => {
     if (artist && bcrypt.compareSync(req.body.password, artist.password)) {
+      console.log("artist.isProfileCompleted", artist.isProfileCompleted)
+      console.log("artist", artist)
       res.json({ result: true, token: artist.token, isProfileCompleted: artist.isProfileCompleted}); // idée : rajouter ici un booléen isProfileCompleted, pareil pour venue pour savoir s'il faut rediriger vers le formulaire
     } else {
       res.json({ result: false, error: "User not found or wrong password" });
@@ -59,31 +62,43 @@ exports.signInArtist = async (req, res) => {
 
 //AJOUT D'INFORMATIONS - DEUXIEME ETAPE DE L'INSCRIPTION
 exports.createProfileArtist = async (req, res) => {
+  console.log("req.body", req.body)
   //Vérification que les champs obligatoires sont bien remplis - ou vérification en front ?
   if (!checkBody(req.body, ["name"])) {
     res.json({ result: false, error: "Missing or empty mandatory fields" });
     return;
   }
-  Artist.updateOne(
-    { token: req.params.token },
-    {
-      $set: {
-        name: req.body.name,
-        type: req.body.type,
-        description: req.body.description,
-        members: req.body.members,
-        picture: req.body.picture,
-        genres: req.body.genres,
-        socials: req.body.socials,
-        isProfileCompleted: true,
-      },
+  Artist.findOne({ token: req.params.token }).then(artist => {
+    if (artist === null) {
+      // Token doesn't exist in the database
+      res.json({ result: false, error: 'Artist does not exist' });      
+    } else {
+      const socials = {
+        youtube: req.body.youtube, 
+        deezer: req.body.deezer, 
+        spotify: req.body.spotify, 
+        soundcloud: req.body.soundcloud, 
+        facebook: req.body.facebook, 
+      }
+      // Complete profile with new data in artist
+      artist.name = req.body.name;
+      artist.type = req.body.type;
+      artist.members = req.body.members;
+      artist.description = req.body.description;
+      artist.picture = req.body.picture;
+      artist.genres = req.body.genres,
+      artist.socials = socials,
+      artist.isProfileCompleted = true;
+      // Save the updated profile in the db
+      console.log('MAJ artiste', artist)
+      artist.save().then(newProfile => {
+        res.json({ result: true, message: 'Profile Created', newProfile, type: req.body.type });
+      });
     }
-  ).then(() => {
-    Artist.find({ token: req.params.token }).then((newProfile) => {
-      res.json({ result: true, message: "Profile created", newProfile });
-    });
   });
 };
+
+
 // RECUPERATION INFOS DE TOUT LES ARTISTES
 exports.getArtists = (req, res) => {
   try {
