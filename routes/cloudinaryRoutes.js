@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 const {
-  uploadFile,
+  uploadProfilePicture,
 } = require("../controllers/cloudinaryController");
 
 // Post upload fichier/img
-router.post('/uploadFile', uploadFile)
+router.post('/uploadProfilePicture', uploadProfilePicture)
 
 module.exports = router;

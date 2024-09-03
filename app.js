@@ -17,7 +17,13 @@ require("./config/connection")
 var app = express();
 
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3001', // Remplacez par l'URL de votre frontend
+    methods: 'GET,POST,PUT,DELETE',  // Spécifiez les méthodes autorisées
+}));
+
+app.options('*', cors()); // Gestion des requêtes préliminaires
+
 
 const fileUpload = require('express-fileupload');
 // Middleware express-fileupload
