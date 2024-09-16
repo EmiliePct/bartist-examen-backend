@@ -45,7 +45,7 @@ async function uploadFile(isVenue, token, image, isForUser, isForEvent, eventId)
         if (isForEvent) {
             updateResult = await Event.updateOne({ _id: eventId }, { picture: resultCloudinary.secure_url });
 
-            if (updateResult && updateResult.nModified > 0) {
+            if (updateResult && updateResult.modifiedCount > 0) {
                 return resultCloudinary.secure_url;
             } else {
                 throw new Error('Event update failed');
