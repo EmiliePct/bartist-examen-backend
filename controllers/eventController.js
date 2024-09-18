@@ -11,7 +11,7 @@ const { checkBody } = require("../utils/checkBody");
 //ROUTE CREATION D'EVENEMENT
 exports.createEvent = async (req, res) => {
     //Vérification que les champs sont bien remplis
-    if (!checkBody(req.body, ['title', 'date', 'hour_start', 'status', 'genres' ])) {
+    if (!checkBody(req.body, ['title', 'date', 'hour_start', 'genres' ])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
       }
@@ -28,7 +28,6 @@ exports.createEvent = async (req, res) => {
             date: req.body.date,
             hour_start: req.body.hour_start,
             picture: req.body.picture,
-            status: req.body.status,
             socials: req.body.socials,
             venue: venue._id,
             genres: req.body.genres,
@@ -123,40 +122,6 @@ exports.getEventsByVenueToken = async (req, res) => {
     console.log(error.message);
   }
 }
-
-    //Route DELETE event
-exports.deleteEvent = async (req, res) => {
-  // Ne pas passer l'id en params pour que la route fonctionnne
-      try{
-        //Si trouvé, cherche le venue qui correspond dans la collection event pour le delete
-        Event.deleteOne({ _id: req.body._id }) // La cle correspond a ce qu'on a en bdd, et le req.param fait reference a la route
-        .then(data => {
-            if (data.deletedCount > 0) { // cf doc mongoose
-                res.json({ result: true, message: "This event has been successfully deleted" })
-            } else {
-                res.json({ result: false, error:"Event not found" })
-            }
-        });
-      } catch(error){
-        console.log(error.message);
-      }
-};
-
-    // Route update event's status
-exports.updateEventStatus = async (req, res) => {
-  try{
-      Event.updateOne({_id: req.body._id}, { status: req.body.status})
-      .then(data => {
-        if(data){
-          res.json({ result: true, message: "This status has been modified" })
-        } else {
-            res.json({ result: false, error: "Status not found" })
-        }
-    });
-  } catch(error){
-    console.log(error.message);
-  }
-};
 
 exports.displayEventsByBooking = async (req, res) => {
   try{

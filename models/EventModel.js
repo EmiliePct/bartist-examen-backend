@@ -11,7 +11,6 @@ const eventSchema = mongoose.Schema({
   date: Date,
   hour_start: String,
   picture: String,
-  status: String,
   socials: socialsSchema,
   venue: {type: mongoose.Schema.Types.ObjectId, ref: 'venues'},
   genres: [String],

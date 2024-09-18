@@ -19,7 +19,12 @@ exports.uploadProfilePicture = async (req, res) => {
   //(isVenue, token, image, isForUser, isForEvent, eventId)
   try {
     // Extraction des données depuis la requête
-    const { isVenue, token } = req.body;
+    let isVenue = req.body.isVenue;
+    const { token } = req.body;
+
+    isVenue = JSON.parse(isVenue);
+
+    console.log("TYPEOF ISvenue dans le controller", typeof(isVenue))
     const image = req.files ? req.files.image : null;
 
     // Vérification de la présence de l'image

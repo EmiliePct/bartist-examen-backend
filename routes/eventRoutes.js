@@ -7,8 +7,6 @@ const {
     getEvents,
     displayEvents,
     getEventById,
-    deleteEvent,
-    updateEventStatus,
     getEventsByVenueToken,
     displayEventsByBooking
     
@@ -21,11 +19,6 @@ router.post('/createEvent', createEvent)
 // GET displayEvents / le nom de la route est independante de ce qui a dans la bdd, donc on nomme comme on veu
 router.get('/displayEvents/:token', displayEvents)
 router.get('/token/:token', displayEventsByBooking)
-// DELETE deleteEvent / le nom de la route est independante de ce qui a dans la bdd, donc on nomme comme on veu
-router.delete('/deleteEvent', deleteEvent)
-
-// Post modifie le statut d'un evenement
-router.post('/updateEventStatus', updateEventStatus)
 
 router.get('/', getEvents)
 router.get('/id/:id', getEventById)
